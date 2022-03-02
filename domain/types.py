@@ -1,3 +1,5 @@
+## THIS CODE BELONGS TO @Dfleta ##
+
 class GildedRose(object):
 
     def __init__(self, items):
