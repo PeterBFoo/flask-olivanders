@@ -47,9 +47,9 @@ def insertDocument(item, quality, sell_in, clase):
 # @app.route('/update/<item>/<quality>/<sell-in>')
 
 
-# @app.route('/delete/<item>')
-# def deleteItem(item):
-#    return Delete.deleteDocument(item)
+@app.route('/delete/<item>')
+def deleteItem(item):
+    return Delete.deleteDocument(item)
 
 
 if __name__ == "__main__":
