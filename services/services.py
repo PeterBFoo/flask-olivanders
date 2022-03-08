@@ -34,7 +34,7 @@ class Services:
                 return "No se ha encontrado ningún objeto con la calidad " + num
 
         except:
-            return "Algo ha salido mal", 500
+            return "No se han encontrado items"
 
     @staticmethod
     def getSellIn(num):
@@ -50,7 +50,7 @@ class Services:
             return query
 
         except:
-            return "Algo ha salido mal", 500
+            return "No se han encontrado items"
 
     @staticmethod
     def getItem(name):
@@ -66,7 +66,7 @@ class Services:
             return query
 
         except:
-            return "Algo ha salido mal", 500
+            return "No se ha encontrado el item"
 
     @staticmethod
     def insertItem(item, quality, sell_in, clase):
@@ -84,3 +84,15 @@ class Services:
                 return "Se ha insertado correctamente el documento en la base de datos -> \t" + item["item"] + ", \t" + str(item["quality"]) + ", \t" + str(item["sell_in"])
             else:
                 return "Se ha insertado el documento en la base de datos, pero no se puede mostrar"
+
+    @staticmethod
+    def deleteDocument(item):
+        try:
+            delete = DB.deleteDocument(item)
+            if (Services.getItem(item) == {}):
+                return "No existe el item indicado"
+            else:
+                return "El item " + item + " ha sido eliminado"
+
+        except:
+            return "Algo ha salido mal"

@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from db_access import Passwords
+from repository.db_access import Passwords
 
 
 class DB:
@@ -50,15 +50,8 @@ class DB:
 
     def insertDocument(json):
         db = DB.conectarConMongo()
-        try:
-            db.insert_one(json)
+        db.insert_one(json)
 
-        except:
-            return "No se ha insertado el documento en la base de datos"
-
-        cursor = DB.getItem(json["item"])
-        for item in cursor:
-            if item["item"] == json["item"]:
-                return "Se ha insertado correctamente el documento en la base de datos -> \t" + item["item"] + ", \t" + str(item["quality"]) + ", \t" + str(item["sell_in"])
-            else:
-                return "Se ha insertado el documento en la base de datos, pero no se puede mostrar"
+    def deleteDocument(item):
+        collection = DB.conectarConMongo()
+        collection.delete_one({"item": item})
