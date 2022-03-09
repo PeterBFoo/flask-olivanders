@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from flask import g
 from repository.db_access import Passwords
 
 
@@ -24,8 +25,10 @@ class DB:
         uri = Passwords.uri()
         client = MongoClient(uri)
         db = client.olivanders
-        collection = db.inventario
-        return collection
+        if 'db' not in g:
+            g.db = db.inventario
+
+        return g.db
 
     def getQuery(query):
         try:
@@ -55,3 +58,11 @@ class DB:
     def deleteDocument(item):
         collection = DB.conectarConMongo()
         collection.delete_one({"item": item})
+
+    def updateDocument(item, quality, sell_in):
+        query = {"item": item, "quality": int(
+            quality), "sell_in": int(sell_in)}
+        collection = DB.conectarConMongo()
+
+        collection.update_one(query)
+        return query
