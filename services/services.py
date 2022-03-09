@@ -81,7 +81,7 @@ class Services:
         cursor = DB.getItem(request["item"])
         for item in cursor:
             if item["item"] == request["item"]:
-                return "Se ha insertado correctamente el documento en la base de datos -> \t" + item["item"] + ", \t" + str(item["quality"]) + ", \t" + str(item["sell_in"])
+                return "Se ha insertado correctamente el documento en la base de datos"
             else:
                 return "Se ha insertado el documento en la base de datos, pero no se puede mostrar"
 
@@ -93,6 +93,19 @@ class Services:
                 return "No existe el item indicado"
             else:
                 return "El item " + item + " ha sido eliminado"
+
+        except:
+            return "Algo ha salido mal"
+
+    @staticmethod
+    def updateDocument(item, quality, sell_in):
+        try:
+            objeto = Services.getItem(item)
+            if (objeto != {}):
+                DB.updateDocument(item, quality, sell_in)
+                return "El item " + item + " ha sido actualizado"
+            else:
+                return "El item " + item + " no existe"
 
         except:
             return "Algo ha salido mal"
