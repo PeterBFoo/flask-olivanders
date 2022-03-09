@@ -56,7 +56,5 @@ def deleteItem(item):
     return Delete.deleteDocument(item)
 
 
-getItem("Wand")
-
 if __name__ == "__main__":
     app.run(debug=True)
