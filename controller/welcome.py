@@ -8,7 +8,10 @@ class Welcome:
             ["/sell_in/num", "Devuelve los objetos que tienen el sell_in indicado"],
             ["/item/name", "Devuelve el item junto a su quality y sell_in"],
             ["/insert/item/quality/sell_in/clase",
-                "Inserta un documento en la base de datos y seguidamente lo busca"]]
+                "Inserta un documento en la base de datos y seguidamente lo busca"],
+            ['/update/item/quality/sell_in',
+                "Actualiza un documento con el nombre 'item' de la base de datos"],
+            ['/delete/item', "Elimina un documento con el nombre 'item' de la base de datos"]]
 
         welcome = "<h1>Welcome to Olivanders</h1><br>"
         welcome += "<h3>Rutas habilitadas</h3>"
