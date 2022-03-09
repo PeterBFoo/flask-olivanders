@@ -6,6 +6,7 @@ from controller.item import Item
 from controller.quality import Quality
 from controller.sell_in import SellIn
 from controller.delete import Delete
+from controller.update import Update
 
 app = Flask(__name__)
 
@@ -44,13 +45,18 @@ def getItem(name):
 def insertDocument(item, quality, sell_in, clase):
     return Insert.insertarDocumento(item, quality, sell_in, clase)
 
-# @app.route('/update/<item>/<quality>/<sell-in>')
+
+@app.route('/update/<item>/<quality>/<sell_in>')
+def updateDocument(item, quality, sell_in):
+    return Update.updateDocument(item, quality, sell_in)
 
 
 @app.route('/delete/<item>')
 def deleteItem(item):
     return Delete.deleteDocument(item)
 
+
+getItem("Wand")
 
 if __name__ == "__main__":
     app.run(debug=True)
