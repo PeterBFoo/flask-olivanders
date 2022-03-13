@@ -11,7 +11,7 @@ class Insert:
         comprove = False
         while comprove == False:
 
-            if not isinstance(item, str):
+            if item.isdigit():
                 abort(400, "El campo item no es correcto -> " + item)
 
             if quality.isdigit():
