@@ -9,10 +9,15 @@ class DB:
         uri = Passwords.uri()
         client = MongoClient(uri)
         db = client.olivanders
-        if 'db' not in g:
-            g.db = db.inventario
+        try:
+            if 'db' not in g:
+                g.db = db.inventario
 
-        return g.db
+            return g.db
+
+        except:
+            collection = db.inventario
+            return collection
 
     def init_db():
         db = DB.conectarConMongo()
