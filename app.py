@@ -55,7 +55,8 @@ def updateQuality():
     return UpdateQuality.updateQuality(0)
 
 if __name__ == "__main__":
-    query = inventariosq()
-    if query == {}:
-        DB.init_db()
-    app.run(debug=True)
+    # query = inventariosq()
+    # if query == {}:
+    #    DB.init_db()
+    url = "http://127.0.0.1:5000"
+    app.run(use_reloader=False, debug=True, port=5000)
