@@ -1,5 +1,4 @@
 ## THIS CODE BELONGS TO @Dfleta ##
-
 class GildedRose(object):
 
     def __init__(self, items):
@@ -135,7 +134,7 @@ class Sulfuras(NormalItem):
         pass
 
 
-class Backstage(NormalItem):
+class BackstagePass(NormalItem):
 
     def __init__(self, name, sell_in, quality):
         Item.__init__(self, name, sell_in, quality)
