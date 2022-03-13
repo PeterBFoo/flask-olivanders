@@ -44,8 +44,7 @@ class DB:
             return db
 
         except:
-            db = DB.inventarioOffline
-            return db
+            return "No se ha podido conectar con la base de datos", 503
 
     def getItemQuality(num):
         db = DB.getQuery({"quality": int(num)})
