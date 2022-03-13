@@ -1,5 +1,8 @@
 /venv
 /test
 /requirements.txt
+__init__.py
+.pytest_cache/
+__pycache__/
 .gitignore
 README.md

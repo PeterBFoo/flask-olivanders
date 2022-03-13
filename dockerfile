@@ -1,10 +1,12 @@
-FROM python:3.9-slim
+FROM python:alpine
+ENV FLASK_APP app.py
 WORKDIR /
 COPY . /
+
+EXPOSE 5000
 
 RUN pip install pip-tools
 RUN pip-compile requirements.in
 RUN pip-sync
 
-RUN export FLASK_APP=app.py
-CMD ["python3", "-m", "flask", "run", "-h", "0.0.0.0"]
+CMD [ "flask", "run", "--host=0.0.0.0", "--port=5000" ]
