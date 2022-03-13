@@ -5,22 +5,6 @@ from repository.db_access import Passwords
 
 class DB:
 
-    inventarioOffline = [{"item": "+5 Dexterity Vest", "quality": 20, "sell_in": 10},
-                         {"item": "Aged Brie", "quality": 0, "sell_in": 2},
-                         {"item": "Elixir of the Mongoose",
-                             "quality": 7, "sell_in": 5},
-                         {"item": "Sulfuras, Hand of Ragnaros",
-                             "quality": 80, "sell_in": 0},
-                         {"item": "Sulfuras, Hand of Ragnaros",
-                             "quality": 80, "sell_in": -1},
-                         {"item": "Backstage passes to a TAFKAL80ETC concert",
-                             "quality": 20, "sell_in": 15},
-                         {"item": "Backstage passes to a TAFKAL80ETC concert",
-                             "quality": 30, "sell_in": 10},
-                         {"item": "Backstage passes to a TAFKAL80ETC concert",
-                             "quality": 40, "sell_in": 5}
-                         ]
-
     def conectarConMongo():
         uri = Passwords.uri()
         client = MongoClient(uri)
@@ -29,6 +13,25 @@ class DB:
             g.db = db.inventario
 
         return g.db
+
+    def init_db():
+        db = DB.conectarConMongo()
+
+        createInventario = [{"item": "+5 Dexterity Vest", "quality": 20, "sell_in": 10, "_class": "NormalItem"},
+                    {"item": "Aged Brie", "quality": 0,
+                     "sell_in": 2, "_class": "AgedBrie"},
+                    {"item": "Elixir of the Mongoose",
+                     "quality": 7, "sell_in": 5, "_class": "ConjuredItem"},
+                    {"item": "Sulfuras, Hand of Ragnaros", "_class": "Sulfuras",
+                     "quality": 80, "sell_in": 0},
+                    {"item": "Backstage passes to a TAFKAL80ETC concert",
+                     "quality": 20, "sell_in": 15, "_class": "BackstagePass"}
+                    ]
+                    
+        i = 0
+        while i < len(createInventario):
+            db.insert_one(createInventario[i])
+            i += 1
 
     def getQuery(query):
         try:
@@ -60,9 +63,9 @@ class DB:
         collection.delete_one({"item": item})
 
     def updateDocument(item, quality, sell_in):
-        query = {"item": item, "quality": int(
-            quality), "sell_in": int(sell_in)}
+        query = {"item": item}
+        newvalues = {"$set": {"quality": int(
+            quality), "sell_in": int(sell_in)}}
         collection = DB.conectarConMongo()
 
-        collection.update_one(query)
-        return query
+        collection.update_one(query, newvalues)
