@@ -15,7 +15,7 @@ class Welcome:
             ['/update/all', "Actualiza la quality de todos los items que hay en la base de datos"]
         ]
 
-        welcome = "<h1>Welcome to Olivanders</h1><br>"
+        welcome = "<h1>Bienvenido a la tienda de Olivanders</h1><br>"
         welcome += "<h3>Rutas habilitadas</h3>"
 
         for entries in rutas:
