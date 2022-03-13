@@ -20,55 +20,50 @@ class Services:
 
     @staticmethod
     def getQuality(num):
-        try:
-            db = DB.getItemQuality(num)
-            query = {}
+        db = DB.getItemQuality(num)
+        query = {}
 
-            if (bool(db)):
-                for item in db:
-                    query[item["item"]] = {}
-                    query[item["item"]]["quality"] = item["quality"]
-                    query[item["item"]]["sell_in"] = item["sell_in"]
+        for item in db:
+            query[item["item"]] = {}
+            query[item["item"]]["quality"] = item["quality"]
+            query[item["item"]]["sell_in"] = item["sell_in"]
 
-                return query
+        if query != {}:    
+            return query
 
-            else:
-                return "No se ha encontrado ningún objeto con la calidad " + num
-
-        except:
-            return "No se han encontrado items"
+        else:
+            abort(404, "No se ha encontrado ningún item con la calidad -> " + num)
 
     @staticmethod
     def getSellIn(num):
-        try:
-            db = DB.getItemSellIn(num)
-            query = {}
+        db = DB.getItemSellIn(num)
+        query = {}
 
-            for item in db:
-                query[item["item"]] = {}
-                query[item["item"]]["quality"] = item["quality"]
-                query[item["item"]]["sell_in"] = item["sell_in"]
+        for item in db:
+            query[item["item"]] = {}
+            query[item["item"]]["quality"] = item["quality"]
+            query[item["item"]]["sell_in"] = item["sell_in"]
 
+        if query != {}:    
             return query
 
-        except:
-            return "No se han encontrado items"
+        else:
+            abort(404, "No se ha encontrado ningún item con el sellIn -> " + num)
 
     @staticmethod
-    def getItem(name):
-        try:
-            db = DB.getItem(name)
-            query = {}
+    def getItem(name=str):
+        db = DB.getItem(name)
+        query = {}
 
-            for item in db:
-                query[item["item"]] = {}
-                query[item["item"]]["quality"] = item["quality"]
-                query[item["item"]]["sell_in"] = item["sell_in"]
-
+        for item in db:
+            query[item["item"]] = {}
+            query[item["item"]]["quality"] = item["quality"]
+            query[item["item"]]["sell_in"] = item["sell_in"]
+        
+        if query != {}:
             return query
 
-        except:
-            return "No se ha encontrado el item"
+        abort(404, "No se ha encontrado ningún item con el nombre -> " + name)
 
     @staticmethod
     def insertItem(item, quality, sell_in, clase):
@@ -78,42 +73,35 @@ class Services:
             DB.insertDocument(request)
 
         except:
-            return "No se ha insertado el documento en la base de datos"
+            abort(400, "No se ha podido insertar el documento")
 
         collection = DB.getItem(request["item"])
         for item in collection:
             if item["item"] == request["item"]:
                 return "Se ha insertado correctamente el documento en la base de datos"
-            else:
-                return "Se ha insertado el documento en la base de datos, pero no se puede mostrar"
 
     @staticmethod
     def deleteDocument(item):
-        try:
-            if (Services.getItem(item) != {}):
-                delete = DB.deleteDocument(item)
-                return "El item " + item + " ha sido eliminado"
+        if (Services.getItem(item) != {}):
+            delete = DB.deleteDocument(item)
+            return "El item " + item + " ha sido eliminado"
 
-            else:
-                return "No se ha encontrado el item " + item + " en la base de datos"                
-
-        except:
-            return "Algo ha salido mal"
+        else:
+            abort(404, "No se ha encontrado el item -> " + item)
 
     @staticmethod
     def updateDocument(item, quality, sell_in):
-        try:
-            if (Services.getItem(item) != {}):
-                DB.updateDocument(item, quality, sell_in)
-                return Services.getItem(item)
-            else:
-                return "El item " + item + " no existe"
-
-        except:
-            return "Algo ha salido mal"
+        if (Services.getItem(item) != {}):
+            DB.updateDocument(item, quality, sell_in)
+            return Services.getItem(item)
+        else:
+            abort(404, "No se ha encontrado el item -> " + item)
 
     @staticmethod
     def updateQuality(test):
+        ## SI TEST == 1 -> TESTEO ACTIVADO ##
+        ## SI TEST == 0 -> TESTEO DESACTIVADO ##
+        
         ## Conecta con la base de datos para obtener todo el inventario ##
         if test == 1:
             connection = conectar_bd_test()
