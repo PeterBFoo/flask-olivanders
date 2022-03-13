@@ -1,4 +1,5 @@
 from services.services import Services
+from controller.item import Item
 from flask import abort
 
 listaClases = ["Item", "NormalItem", "ConjuredItem",
@@ -6,23 +7,24 @@ listaClases = ["Item", "NormalItem", "ConjuredItem",
 
 
 class Insert:
-    def insertarDocumento(item, quality, sell_in, clase):
+    def insertarDocumento(item: str, quality: str, sell_in: str, clase: str) -> str:
         comprove = False
         while comprove == False:
 
             if not isinstance(item, str):
                 abort(400, "El campo item no es correcto -> " + item)
 
-            # if isdigit(quality):
-            #     pass
+            if quality.isdigit():
+                pass
 
-            # else:
-            #     abort(400, "El campo quality no es correcto -> " + sell_in)
+            else:
+                abort(400, "El campo quality no es correcto -> " + sell_in)
 
-            # if isdigit(sell_in):
-            #     pass
-            # else:
-            #     abort(400, "El campo sell_in no es correcto -> " + sell_in)
+            if sell_in.isdigit():
+                pass
+
+            else:
+                abort(400, "El campo sell_in no es correcto -> " + sell_in)
 
             if not isinstance(clase, str):
                 abort(400, "El campo clase no es correcto -> " + clase)
@@ -32,4 +34,12 @@ class Insert:
 
             comprove = True
 
-        return Services.insertItem(item, quality, sell_in, clase)
+            depurador = Item.depurateItemInput(item)
+            depuratedItem = ""
+            
+            if depurador != "OK":
+                depuratedItem = depurador
+            else:
+                depuratedItem = item
+
+        return Services.insertItem(depuratedItem, quality, sell_in, clase)
