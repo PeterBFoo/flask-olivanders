@@ -11,7 +11,6 @@ from controller.update_quality import UpdateQuality
 from repository.db import DB
 
 
-
 app = Flask(__name__)
 
 # Initial page #
@@ -55,4 +54,8 @@ def updateQuality():
     return UpdateQuality.updateQuality(0)
 
 if __name__ == "__main__":
+    query = inventariosq()
+    if query == {}:
+        DB.init_db()
     app.run()
+    
