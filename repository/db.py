@@ -16,6 +16,7 @@ class DB:
             return g.db
 
         except:
+        # Se realiza un except por si en algún momento el contexto g falla, así la conexión a la base de datos sigue siendo accesible #
             collection = db.inventario
             return collection
 
