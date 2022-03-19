@@ -12,7 +12,7 @@ def createAppTest():
     from controller.update_quality import UpdateQuality
 
     app = Flask(__name__)
-    test = 1
+    test = True
 
     @app.route('/inventario')
     def inventariosq():

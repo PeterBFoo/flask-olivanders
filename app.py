@@ -12,8 +12,8 @@ from controller.update_quality import UpdateQuality
 def create_app():
 
     app = Flask(__name__)
-    production = 0
-    test = 1
+    test = True
+    production = False
 
     # Initial page #
 

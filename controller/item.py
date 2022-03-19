@@ -2,11 +2,11 @@ from services.services import Services
 
 
 class Item:
-    def getItem(name):
+    def getItem(name, test):
         depurador = Item.depurateItemInput(name)
         if depurador != "OK":
-            return Services.getItem(depurador)
-        return Services.getItem(name)
+            return Services.getItem(depurador, test)
+        return Services.getItem(name, test)
 
     def depurateItemInput(name):
         if name.find("-") > 0:

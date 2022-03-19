@@ -3,5 +3,5 @@ from services.services import Services
 
 class Inventario:
 
-    def getInventario():
-        return Services.getInventarioSQ()
+    def getInventario(test):
+        return Services.getInventarioSQ(test)

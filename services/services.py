@@ -1,5 +1,4 @@
 from repository.db import DB
-from repository.db_test import conectar_bd_test, getInventory
 from domain.types import *
 from flask import abort
 
@@ -7,11 +6,11 @@ from flask import abort
 class Services:
 
     @staticmethod
-    def getInventarioSQ():
-        db = DB.getQuery({})
-
+    def getInventarioSQ(test):
+        query = DB.getQuery({}, test)
+            
         inventario = {}
-        for entrance in db:
+        for entrance in query:
             inventario[entrance["item"]] = {}
             inventario[entrance["item"]]["quality"] = entrance["quality"]
             inventario[entrance["item"]]["sell_in"] = entrance["sell_in"]
@@ -19,8 +18,9 @@ class Services:
         return inventario
 
     @staticmethod
-    def getQuality(num):
-        db = DB.getItemQuality(num)
+    def getQuality(quality, test):
+        db = DB.getItemQuality(quality, test)
+
         query = {}
 
         for item in db:
@@ -32,11 +32,11 @@ class Services:
             return query
 
         else:
-            abort(404, "No se ha encontrado ningún item con la calidad -> " + num)
+            abort(404, "No se ha encontrado ningún item con la calidad -> " + quality)
 
     @staticmethod
-    def getSellIn(num):
-        db = DB.getItemSellIn(num)
+    def getSellIn(num, test):
+        db = DB.getItemSellIn(num, test)
         query = {}
 
         for item in db:
@@ -51,8 +51,8 @@ class Services:
             abort(404, "No se ha encontrado ningún item con el sellIn -> " + num)
 
     @staticmethod
-    def getItem(name=str):
-        db = DB.getItem(name)
+    def getItem(name, test):
+        db = DB.getItem(name, test)
         query = {}
 
         for item in db:
@@ -66,34 +66,44 @@ class Services:
         abort(404, "No se ha encontrado ningún item con el nombre -> " + name)
 
     @staticmethod
-    def insertItem(item, quality, sell_in, clase):
+    def insertItem(item, quality, sell_in, clase, test):
         request = {"item": item, "quality": int(quality),
                    "sell_in": int(sell_in), "_class": clase}
         try:
-            DB.insertDocument(request)
+            DB.insertDocument(request, test)
 
         except:
             abort(400, "No se ha podido insertar el documento")
 
-        collection = DB.getItem(request["item"])
+        collection = DB.getItem(request["item"], test)
         for item in collection:
             if item["item"] == request["item"]:
                 return "Se ha insertado correctamente el documento en la base de datos"
 
     @staticmethod
-    def deleteDocument(item):
-        if (Services.getItem(item) != {}):
-            delete = DB.deleteDocument(item)
+    def deleteDocument(item, test):
+        if (Services.getItem(item, test) != {}):
+            delete = DB.deleteDocument(item, test)
             return "El item " + item + " ha sido eliminado"
 
         else:
             abort(404, "No se ha encontrado el item -> " + item)
 
     @staticmethod
-    def updateDocument(item, quality, sell_in):
-        if (Services.getItem(item) != {}):
-            DB.updateDocument(item, quality, sell_in)
-            return Services.getItem(item)
+    def deleteAll(test):
+        try:
+            DB.deleteAll(test)
+            return "Se han eliminado todos los documentos", 200
+        
+        except:
+            return "No se han eliminado los documentos", 500
+
+
+    @staticmethod
+    def updateDocument(item, quality, sell_in, test):
+        if (Services.getItem(item, test) != {}):
+            DB.updateDocument(item, quality, sell_in, test)
+            return Services.getItem(item, test)
         else:
             abort(404, "No se ha encontrado el item -> " + item)
 
@@ -103,11 +113,7 @@ class Services:
         ## SI TEST == 0 -> TESTEO DESACTIVADO ##
         
         ## Conecta con la base de datos para obtener todo el inventario ##
-        if test == 1:
-            connection = conectar_bd_test()
-            db = connection.find({})
-        elif test == 0:
-            db = DB.getQuery({})
+        db = DB.getQuery({}, test)
 
         inventario = {}
 
@@ -165,16 +171,11 @@ class Services:
                 updatedInventario[item]["quality"] = updateItem.quality
                 updatedInventario[item]["sell_in"] = updateItem.sell_in
 
-        if test == 1:
-            for item in updatedInventario:
-                query = {"item": item}
-                newvalues = {"$set": {
-                    "quality": updatedInventario[item]["quality"], "sell_in": updatedInventario[item]["sell_in"]}}
-                connection.update_one(query, newvalues)
-            return getInventory()
 
-        else:
-            for item in updatedInventario:
-                Services.updateDocument(
-                    item, updatedInventario[item]["quality"], updatedInventario[item]["sell_in"])
-            return Services.getInventarioSQ()
+        for item in updatedInventario:
+            Services.updateDocument(
+                    item, updatedInventario[item]["quality"], updatedInventario[item]["sell_in"], test)
+        return Services.getInventarioSQ(test)
+
+    def initDB(test):
+        return DB.init_db(test)
