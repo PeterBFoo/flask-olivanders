@@ -1,7 +1,9 @@
+from services.services import Services
 
 class Welcome:
 
     def initial_page():
+
         rutas = [
             ["/inventario", "Devuelve los items del inventario con su calidad y sell_in"],
             ["/quality/num", "Devuelve los objetos que tienen la calidad indicada"],
@@ -12,6 +14,7 @@ class Welcome:
             ['/update/item/quality/sell_in',
                 "Actualiza un documento con el nombre 'item' de la base de datos"],
             ['/delete/item', "Elimina un documento con el nombre 'item' de la base de datos"],
+            ['/delete/all', "Elimina todos los documentos de la base de datos"],
             ['/update/all', "Actualiza la quality de todos los items que hay en la base de datos"]
         ]
 

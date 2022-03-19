@@ -7,7 +7,7 @@ listaClases = ["Item", "NormalItem", "ConjuredItem",
 
 
 class Insert:
-    def insertarDocumento(item: str, quality: str, sell_in: str, clase: str) -> str:
+    def insertarDocumento(item: str, quality: str, sell_in: str, clase: str, test) -> str:
         comprove = False
         while comprove == False:
 
@@ -42,4 +42,4 @@ class Insert:
             else:
                 depuratedItem = item
 
-        return Services.insertItem(depuratedItem, quality, sell_in, clase)
+        return Services.insertItem(depuratedItem, quality, sell_in, clase, test)
