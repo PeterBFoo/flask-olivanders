@@ -9,32 +9,25 @@ createInventario = [{"item": "+5 Dexterity Vest", "quality": 20, "sell_in": 10, 
                     {"item": "Sulfuras, Hand of Ragnaros", "_class": "Sulfuras",
                      "quality": 80, "sell_in": 0},
                     {"item": "Backstage passes to a TAFKAL80ETC concert",
-                     "quality": 20, "sell_in": 15, "_class": "BackstagePass"}
+                     "quality": 20, "sell_in": 15, "_class": "BackstagePass"},
+                     {"item": "Backstage passes to a TAFKAL80ETD concert",
+                     "quality": 20, "sell_in": 9, "_class": "BackstagePass"},
+                     {"item": "Backstage passes to a TAFKAL80ETF concert",
+                     "quality": 20, "sell_in": 4, "_class": "BackstagePass"}
                     ]
 
+class DB_test:
 
-def conectar_bd_test():
-    uri = Passwords.uri()
-    client = MongoClient(uri)
-    db = client.olivanders
-    collection = db.testing
+    def conectar_bd_test():
+        uri = Passwords.uri()
+        client = MongoClient(uri)
+        db = client.olivanders
+        collection = db.testing
 
-    return collection
-
-
-def getInventory():
-    db = conectar_bd_test().find({})
-    inventario = {}
-
-    for entrance in db:
-        inventario[entrance["item"]] = {}
-        inventario[entrance["item"]]["quality"] = entrance["quality"]
-        inventario[entrance["item"]]["sell_in"] = entrance["sell_in"]
-
-    return inventario
+        return collection
 
 
-def init_db():
-    db = conectar_bd_test()
-    for item in createInventario:
-        db.insert_one(item)
+    def init_db():
+        db = DB_test.conectar_bd_test()
+        for item in createInventario:
+            db.insert_one(item)
