@@ -6,8 +6,8 @@ from flask import abort
 class Services:
 
     @staticmethod
-    def getInventarioSQ(test):
-        query = DB.getQuery({}, test)
+    def getInventarioSQ(isTest):
+        query = DB.getQuery({}, isTest)
             
         inventario = {}
         for entrance in query:
@@ -18,8 +18,8 @@ class Services:
         return inventario
 
     @staticmethod
-    def getQuality(quality, test):
-        db = DB.getItemQuality(quality, test)
+    def getQuality(quality, isTest):
+        db = DB.getItemQuality(quality, isTest)
 
         query = {}
 
@@ -35,8 +35,8 @@ class Services:
             abort(404, "No se ha encontrado ningún item con la calidad -> " + quality)
 
     @staticmethod
-    def getSellIn(num, test):
-        db = DB.getItemSellIn(num, test)
+    def getSellIn(num, isTest):
+        db = DB.getItemSellIn(num, isTest)
         query = {}
 
         for item in db:
@@ -51,8 +51,8 @@ class Services:
             abort(404, "No se ha encontrado ningún item con el sellIn -> " + num)
 
     @staticmethod
-    def getItem(name, test):
-        db = DB.getItem(name, test)
+    def getItem(name, isTest):
+        db = DB.getItem(name, isTest)
         query = {}
 
         for item in db:
@@ -66,33 +66,33 @@ class Services:
         abort(404, "No se ha encontrado ningún item con el nombre -> " + name)
 
     @staticmethod
-    def insertItem(item, quality, sell_in, clase, test):
+    def insertItem(item, quality, sell_in, clase, isTest):
         request = {"item": item, "quality": int(quality),
                    "sell_in": int(sell_in), "_class": clase}
         try:
-            DB.insertDocument(request, test)
+            DB.insertDocument(request, isTest)
 
         except:
             abort(400, "No se ha podido insertar el documento")
 
-        collection = DB.getItem(request["item"], test)
+        collection = DB.getItem(request["item"], isTest)
         for item in collection:
             if item["item"] == request["item"]:
                 return "Se ha insertado correctamente el documento en la base de datos"
 
     @staticmethod
-    def deleteDocument(item, test):
-        if (Services.getItem(item, test) != {}):
-            delete = DB.deleteDocument(item, test)
+    def deleteDocument(item, isTest):
+        if (Services.getItem(item, isTest) != {}):
+            delete = DB.deleteDocument(item, isTest)
             return "El item " + item + " ha sido eliminado"
 
         else:
             abort(404, "No se ha encontrado el item -> " + item)
 
     @staticmethod
-    def deleteAll(test):
+    def deleteAll(isTest):
         try:
-            DB.deleteAll(test)
+            DB.deleteAll(isTest)
             return "Se han eliminado todos los documentos", 200
         
         except:
@@ -100,82 +100,61 @@ class Services:
 
 
     @staticmethod
-    def updateDocument(item, quality, sell_in, test):
-        if (Services.getItem(item, test) != {}):
-            DB.updateDocument(item, quality, sell_in, test)
-            return Services.getItem(item, test)
+    def updateDocument(item, quality, sell_in, isTest):
+        if (Services.getItem(item, isTest) != {}):
+            DB.updateDocument(item, quality, sell_in, isTest)
+            return Services.getItem(item, isTest)
         else:
             abort(404, "No se ha encontrado el item -> " + item)
 
-    @staticmethod
-    def updateQuality(test):
-        ## SI TEST == 1 -> TESTEO ACTIVADO ##
-        ## SI TEST == 0 -> TESTEO DESACTIVADO ##
-        
-        ## Conecta con la base de datos para obtener todo el inventario ##
-        db = DB.getQuery({}, test)
+    def __updateInventario(tipo, updated_inventario, inventario, item):
+        updateItem = tipo(
+                    inventario[item], inventario[item]["sell_in"], inventario[item]["quality"])
+        updateItem.update_quality()
 
-        inventario = {}
+        updated_inventario[item] = {}
+        updated_inventario[item]["quality"] = updateItem.quality
+        updated_inventario[item]["sell_in"] = updateItem.sell_in
 
+    def __buildInventario(inventario, db):
         for entrance in db:
             inventario[entrance["item"]] = {}
             inventario[entrance["item"]]["quality"] = entrance["quality"]
             inventario[entrance["item"]]["sell_in"] = entrance["sell_in"]
             inventario[entrance["item"]]["_class"] = entrance["_class"]
 
+
+    @staticmethod
+    def updateQuality(isTest):
+
+        ## Conecta con la base de datos para obtener todo el inventario ##
+        db = DB.getQuery({}, isTest)
+        
+        inventario = {}
+        Services.__buildInventario(inventario, db)
+
         ## TIPOS = ["NormalItem", "ConjuredItem", "AgedBrie", "Sulfuras", "BackstagePass"] ##
         updatedInventario = {}
         for item in inventario:
             if inventario[item]["_class"] == "NormalItem":
-                updateItem = NormalItem(
-                    inventario[item], inventario[item]["sell_in"], inventario[item]["quality"])
-                updateItem.update_quality()
-
-                updatedInventario[item] = {}
-                updatedInventario[item]["quality"] = updateItem.quality
-                updatedInventario[item]["sell_in"] = updateItem.sell_in
+                Services.__updateInventario(NormalItem, updatedInventario, inventario, item)
 
             elif inventario[item]["_class"] == "ConjuredItem":
-                updateItem = ConjuredItem(
-                    inventario[item], inventario[item]["sell_in"], inventario[item]["quality"])
-                updateItem.update_quality()
-
-                updatedInventario[item] = {}
-                updatedInventario[item]["quality"] = updateItem.quality
-                updatedInventario[item]["sell_in"] = updateItem.sell_in
+                Services.__updateInventario(ConjuredItem, updatedInventario, inventario, item)
 
             elif inventario[item]["_class"] == "AgedBrie":
-                updateItem = AgedBrie(
-                    inventario[item], inventario[item]["sell_in"], inventario[item]["quality"])
-                updateItem.update_quality()
-
-                updatedInventario[item] = {}
-                updatedInventario[item]["quality"] = updateItem.quality
-                updatedInventario[item]["sell_in"] = updateItem.sell_in
+                Services.__updateInventario(AgedBrie, updatedInventario, inventario, item)
 
             elif inventario[item]["_class"] == "Sulfuras":
-                updateItem = Sulfuras(
-                    inventario[item], inventario[item]["sell_in"], inventario[item]["quality"])
-                updateItem.update_quality()
-
-                updatedInventario[item] = {}
-                updatedInventario[item]["quality"] = updateItem.quality
-                updatedInventario[item]["sell_in"] = updateItem.sell_in
+                Services.__updateInventario(Sulfuras, updatedInventario, inventario, item)
 
             elif inventario[item]["_class"] == "BackstagePass":
-                updateItem = BackstagePass(
-                    inventario[item], inventario[item]["sell_in"], inventario[item]["quality"])
-                updateItem.update_quality()
-
-                updatedInventario[item] = {}
-                updatedInventario[item]["quality"] = updateItem.quality
-                updatedInventario[item]["sell_in"] = updateItem.sell_in
-
+                Services.__updateInventario(BackstagePass, updatedInventario, inventario, item)
 
         for item in updatedInventario:
             Services.updateDocument(
-                    item, updatedInventario[item]["quality"], updatedInventario[item]["sell_in"], test)
-        return Services.getInventarioSQ(test)
+                    item, updatedInventario[item]["quality"], updatedInventario[item]["sell_in"], isTest)
+        return Services.getInventarioSQ(isTest)
 
-    def initDB(test):
-        return DB.init_db(test)
+    def initDB(isTest):
+        return DB.init_db(isTest)

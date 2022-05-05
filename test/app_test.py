@@ -42,6 +42,10 @@ def createAppTest():
     def deleteItem(item):
         return Delete.deleteDocument(item, test)
 
+    @app.route('/delete/all')
+    def deleteAll():
+        return Delete.deleteAll(test)
+
     @app.route('/test/update/all')
     def updateQualityTest():
         return UpdateQuality.updateQuality(test)

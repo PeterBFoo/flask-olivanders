@@ -25,14 +25,13 @@ def runner(app):
 ### TEST CONTROLLER/INVENTARIO ###
 @pytest.mark.inventario
 def test_inventario(client):
-    db = DB_test.conectar_bd_test()
     DB_test.init_db()
 
     response = client.get("/inventario")
     data = loads(response.data)
     assert len(data) > 0, "Debería haber minimo 1 item"
     
-    db.delete_many({})
+    response = client.get("/delete/all")
 
 
 ### TEST CONTROLLER/ITEM & CONTROLLER/INSERT & CONTROLLER/DELETE ###
@@ -52,7 +51,7 @@ def test_getItem(client):
     client.get("/delete/PruebaPytest")
     comprovacion = client.get("/item/PruebaPytest")
 
-    assert comprovacion.status_code == 404
+    assert comprovacion.status_code == 404, "Si no es 404, el item no se ha borrado"
     assert itemName == "PruebaPytest", "El nombre tiene que ser igual al item insertado"
     assert quality == 20, "La quality tiene que ser igual al quality insertado"
     assert sell_in == 10, "El sell_in tiene que ser igual al sell_in insertado"
@@ -104,8 +103,7 @@ def test_updateItem(client):
 ### TEST CONTROLLER/UPDATE_QUALITY ###
 @pytest.mark.updateQuality
 def test_updateQuality(client):
-    db = DB_test.conectar_bd_test()
-    db.delete_many({})
+    response = client.get("/delete/all")
 
     DB_test.init_db()
 
@@ -153,4 +151,4 @@ def test_updateQuality(client):
             assert data["Sulfuras, Hand of Ragnaros"]["quality"] == 80
             assert data["Sulfuras, Hand of Ragnaros"]["sell_in"] == 0
 
-    db.delete_many({})
+    response = client.get("/delete/all")
