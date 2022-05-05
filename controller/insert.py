@@ -14,16 +14,10 @@ class Insert:
             if item.isdigit():
                 abort(400, "El campo item no es correcto -> " + item)
 
-            if quality.isdigit():
-                pass
+            if not quality.isdigit():
+                abort(400, "El campo quality no es correcto -> " + quality)
 
-            else:
-                abort(400, "El campo quality no es correcto -> " + sell_in)
-
-            if sell_in.isdigit():
-                pass
-
-            else:
+            if not sell_in.isdigit():
                 abort(400, "El campo sell_in no es correcto -> " + sell_in)
 
             if not isinstance(clase, str):
